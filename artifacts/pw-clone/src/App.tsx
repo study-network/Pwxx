@@ -63,7 +63,7 @@ function AccessGate({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const exempt = location === "/access" || location === "/verify";
   const { data: setting, isLoading: settingLoading } = useAccessGateSetting();
-  const accessGateEnabled = setting?.value?.enabled ?? true;
+  const accessGateEnabled = setting?.value?.enabled === true;
   const storedKey = getStoredAccessKey();
   const verification = useQuery({
     queryKey: ["access-key-verification", storedKey],

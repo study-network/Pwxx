@@ -2,6 +2,10 @@ import { pool } from "@workspace/db";
 import { logger } from "./logger";
 
 export async function ensureTables() {
+  if (!process.env.DATABASE_URL) {
+    logger.info("DATABASE_URL not set; skipping database migration");
+    return;
+  }
   const client = await pool.connect();
   try {
     await client.query(`
