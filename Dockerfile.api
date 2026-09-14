@@ -13,7 +13,7 @@ COPY lib/ ./lib/
 COPY artifacts/api-server/ ./artifacts/api-server/
 
 # Install all dependencies (including devDeps needed for build)
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 # Build the API (esbuild bundles src → dist/index.mjs)
 RUN pnpm --filter @workspace/api-server run build

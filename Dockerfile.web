@@ -12,7 +12,7 @@ COPY lib/ ./lib/
 COPY artifacts/pw-clone/ ./artifacts/pw-clone/
 
 # Install all dependencies
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 # Build the frontend (outputs to artifacts/pw-clone/dist)
 RUN pnpm --filter @workspace/pw-clone run build

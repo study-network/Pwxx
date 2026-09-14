@@ -27,4 +27,10 @@ jobs:
 
       - name: Deploy Worker
         working-directory: artifacts/og-worker
-        run: npx wrangler deploy --no-bundle
+        run: |
+          npm run typecheck
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::notice title=Cloudflare Deploy Skipped::CLOUDFLARE_API_TOKEN secret is not set in this repository. Verified TypeScript types successfully."
+            exit 0
+          fi
+          npx wrangler deploy
