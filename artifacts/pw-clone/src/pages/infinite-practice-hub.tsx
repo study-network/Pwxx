@@ -5,8 +5,8 @@ import { INFINITE_PRACTICE_BATCHES } from "@/hooks/useInfinitePractice";
 
 export default function InfinitePracticeHub() {
   usePageMeta({
-    title: "Infinite Practice | PWX",
-    description: "Choose your class and exam to start Infinite Practice on PWX.",
+    title: "Infinite Practice | PW Study Network",
+    description: "Choose your class and exam to start Infinite Practice on PW Study Network.",
     canonical: "/batch/infinite-practice",
   });
 

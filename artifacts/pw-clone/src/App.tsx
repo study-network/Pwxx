@@ -97,40 +97,31 @@ function Router() {
         <MaintenanceGate>
           <AccessGate>
             <NotificationBanner />
-            <AnimatePresence initial={false}>
-              <motion.div
-                key={location}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.12, ease: "easeOut" }}
-                style={{ position: "absolute", inset: 0, minHeight: "100dvh" }}
-              >
-                <Switch>
-                  <Route path="/"><Redirect to="/pw" /></Route>
-                  <Route path="/access" component={AccessPage} />
-                  <Route path="/verify" component={VerifyPage} />
-                  <Route path="/pw" component={Home} />
-                  <Route path="/batch/infinite-practice" component={InfinitePracticeHub} />
-                  <Route path="/batch/:batchId" component={Batch} />
-                  <Route path="/batch/:batchId/infinite-practice" component={InfinitePractice} />
-                  <Route path="/batch/:batchId/subject/:subjectId" component={Subject} />
-                  <Route path="/batch/:batchId/subject/:subjectId/topic/:topicId" component={Topic} />
-                  <Route path="/batch/:batchId/calendar" component={BatchCalendar} />
-                  <Route path="/watch" component={Watch} />
-                  <Route path="/live-watch" component={LiveWatch} />
-                  <Route path="/schedule-watch" component={ScheduleWatch} />
-                  <Route path="/materials" component={Materials} />
-                  <Route path="/schedule" component={Schedule} />
-                  <Route path="/my-mix" component={MyMixList} />
-                  <Route path="/my-mix/:mixId" component={MyMixDetail} />
-                  <Route path="/dpp-quiz" component={DppQuiz} />
-                  <Route path="/revision" component={RevisionPage} />
-                  <Route path="/dashboard" component={Dashboard} />
-                  <Route component={NotFound} />
-                </Switch>
-              </motion.div>
-            </AnimatePresence>
+            <div className="relative min-h-screen w-full flex flex-col">
+              <Switch>
+                <Route path="/" component={Home} />
+                <Route path="/pw" component={Home} />
+                <Route path="/access" component={AccessPage} />
+                <Route path="/verify" component={VerifyPage} />
+                <Route path="/batch/infinite-practice" component={InfinitePracticeHub} />
+                <Route path="/batch/:batchId" component={Batch} />
+                <Route path="/batch/:batchId/infinite-practice" component={InfinitePractice} />
+                <Route path="/batch/:batchId/subject/:subjectId" component={Subject} />
+                <Route path="/batch/:batchId/subject/:subjectId/topic/:topicId" component={Topic} />
+                <Route path="/batch/:batchId/calendar" component={BatchCalendar} />
+                <Route path="/watch" component={Watch} />
+                <Route path="/live-watch" component={LiveWatch} />
+                <Route path="/schedule-watch" component={ScheduleWatch} />
+                <Route path="/materials" component={Materials} />
+                <Route path="/schedule" component={Schedule} />
+                <Route path="/my-mix" component={MyMixList} />
+                <Route path="/my-mix/:mixId" component={MyMixDetail} />
+                <Route path="/dpp-quiz" component={DppQuiz} />
+                <Route path="/revision" component={RevisionPage} />
+                <Route path="/dashboard" component={Dashboard} />
+                <Route component={NotFound} />
+              </Switch>
+            </div>
             {location !== "/watch" && location !== "/schedule-watch" && location !== "/live-watch" && <AiGirl />}
           </AccessGate>
         </MaintenanceGate>

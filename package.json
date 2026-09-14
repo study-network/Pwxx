@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "bash scripts/start-dev.sh",
     "start": "bash scripts/start-dev.sh",
-    "build": "(cd artifacts/pw-clone && ./node_modules/.bin/vite build --config vite.config.ts) && mkdir -p dist && cp -r artifacts/pw-clone/dist/public/* dist/",
+    "build": "(cd artifacts/pw-clone && (./node_modules/.bin/vite build --config vite.config.ts || npx vite build --config vite.config.ts)) && mkdir -p dist && cp -r artifacts/pw-clone/dist/public/* dist/",
     "lint": "echo 'No lint errors'",
     "typecheck": "tsc --build"
   },

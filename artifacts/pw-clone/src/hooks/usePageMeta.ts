@@ -11,9 +11,9 @@
 
 import { useEffect } from "react";
 
-const BASE_SITE = "https://pwx.pages.dev";
+const BASE_SITE = typeof window !== "undefined" ? window.location.origin : "https://pwstudynetwork.pages.dev";
 const DEFAULT_OG_IMAGE = "https://cdn.pw.live/subjects/pwicons/PW.png";
-const SITE_SUFFIX = "PWX";
+const SITE_SUFFIX = "PW Study Network";
 
 export interface PageMetaOptions {
   title: string;

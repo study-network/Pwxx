@@ -117,7 +117,7 @@ function MixListPage() {
   usePageMeta({
     title: "My Study Mix | Custom PW Batch",
     description:
-      "Create your personalised study mix from Physics Wallah batches. Combine Physics from one batch, Maths from another — study exactly what you need on PWX.",
+      "Create your personalised study mix from Physics Wallah batches. Combine Physics from one batch, Maths from another — study exactly what you need on PW Study Network.",
     canonical: "/my-mix",
   });
 

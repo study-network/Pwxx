@@ -774,8 +774,8 @@ export default function Batch() {
       ? `${batchName} Free Batch | Physics Wallah`
       : "PW Free Batch | Physics Wallah",
     description: batchName
-      ? `Watch ${batchName} free batch on PWX. Free video lectures, DPP quizzes and study materials for IIT JEE & NEET by Physics Wallah — no subscription needed.`
-      : "Watch this Physics Wallah free batch on PWX. Free lectures, DPP quizzes and study materials for IIT JEE & NEET.",
+      ? `Watch ${batchName} free batch on PW Study Network. Free video lectures, DPP quizzes and study materials for IIT JEE & NEET by Physics Wallah — no subscription needed.`
+      : "Watch this Physics Wallah free batch on PW Study Network. Free lectures, DPP quizzes and study materials for IIT JEE & NEET.",
     canonical: `/batch/${batchId}`,
     schema: [
       breadcrumbSchema([

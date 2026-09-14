@@ -274,16 +274,16 @@ export default function AppLauncher() {
         className="flex flex-col items-center mb-8 sm:mb-10"
       >
         <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden shadow-xl mb-3">
-          <img src="/pwx-logo.png" alt="PWX Logo" className="w-full h-full object-cover" />
+          <img src="/pwx-logo.png" alt="PW Study Network Logo" className="w-full h-full object-cover" />
         </div>
-        <h1 className="text-white font-black text-2xl sm:text-3xl tracking-tight mb-1">PWX Hub</h1>
+        <h1 className="text-white font-black text-2xl sm:text-3xl tracking-tight mb-1">PW Study Network Hub</h1>
         <p className="text-zinc-500 text-sm sm:text-base">Choose an App</p>
       </motion.div>
 
       {/* 2-column grid */}
       <div className="w-full max-w-sm sm:max-w-md grid grid-cols-2 gap-3 sm:gap-4">
 
-        {/* PWX tile */}
+        {/* PW Study Network tile */}
         <motion.button
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -303,11 +303,11 @@ export default function AppLauncher() {
           </div>
           {/* Name */}
           <div className="w-full">
-            <p className="text-white font-bold text-base leading-tight">PWX</p>
+            <p className="text-white font-bold text-base leading-tight">PW Study Network</p>
             <p className="text-indigo-400 text-xs mt-0.5 font-medium">Free Batches</p>
             <div className="flex items-center gap-1 mt-2">
               <TgIcon className="w-3 h-3 text-[#0088cc]" />
-              <span className="text-zinc-500 text-[11px]">@pwxonrender</span>
+              <span className="text-zinc-500 text-[11px]">@pwstudynetwork</span>
             </div>
           </div>
         </motion.button>

@@ -34,8 +34,14 @@ function saveMemory(mem: Memory) {
 }
 
 // ── Gemini setup ────────────────────────────────────────────────────────────
-const apiKey = process.env["GOOGLE_AI_API_KEY"] ?? "";
-const genAI = new GoogleGenerativeAI(apiKey);
+function getGenAI(): GoogleGenerativeAI | null {
+  const key =
+    process.env["GEMINI_API_KEY"] ||
+    process.env["GOOGLE_AI_API_KEY"] ||
+    process.env["GOOGLE_API_KEY"] ||
+    "";
+  return key ? new GoogleGenerativeAI(key) : null;
+}
 
 const SYSTEM_PROMPT = `Tu Aria hai — ek super cute, caring aur emotionally intelligent AI companion jo ek study platform mein rehti hai aur is platform ko CONTROL bhi kar sakti hai.
 
@@ -201,8 +207,16 @@ router.post("/ai/chat", async (req, res) => {
     const studyPreference = getStudyPreference(message);
     const conversationMem =
       studyPreference === undefined ? mem : { ...mem, studyTalkDisabled: studyPreference };
+
+    const genAI = getGenAI();
+    if (!genAI) {
+      const fallbackReply = "Main yahan hoon! Agar aapko padhai ya batches se related koi sawal ho toh batayein. App ke saare lectures aur study materials available hain!";
+      res.json({ reply: fallbackReply, memory: { userName: conversationMem.userName } });
+      return;
+    }
+
     const model = genAI.getGenerativeModel({
-      model: "gemini-3.5-flash-lite",
+      model: "gemini-2.0-flash",
       systemInstruction: buildSystemWithMemory(conversationMem),
     });
 
@@ -249,7 +263,8 @@ router.post("/ai/chat", async (req, res) => {
     res.json({ reply, action, memory: { userName: updatedMem.userName } });
   } catch (err: unknown) {
     console.error("AI chat error:", err);
-    res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
+    const fallbackReply = "Main yahan hoon! Abhi AI network response thoda slow hai, par aap apne batches aur lecture video bina kisi rukawat ke dekh sakte hain.";
+    res.json({ reply: fallbackReply, error: err instanceof Error ? err.message : String(err) });
   }
 });
 

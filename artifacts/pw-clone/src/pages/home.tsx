@@ -104,7 +104,7 @@ function TelegramModal({ batchName, onClose }: { batchName: string; onClose: () 
               <CheckCircle2 className="w-3 h-3" />
               Enrolled in {batchName.length > 28 ? batchName.slice(0, 28) + "…" : batchName}
             </div>
-            <h2 className="text-xl font-extrabold mb-2">Join the PWX Community!</h2>
+            <h2 className="text-xl font-extrabold mb-2">Join the PW Study Network Community!</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Get updates, new batch alerts, study tips, and connect with fellow learners on our Telegram channel.
             </p>
@@ -138,8 +138,8 @@ function TelegramModal({ batchName, onClose }: { batchName: string; onClose: () 
   );
 }
 
-const SITE_URL = "https://pwx.pages.dev";
-const SHARE_TEXT = "🔥 PWX — Physics Wallah ke saare FREE batches ek jagah! IIT JEE, NEET, Foundation — sab free! Dekho:";
+const SITE_URL = typeof window !== "undefined" ? window.location.origin : "https://pwstudynetwork.pages.dev";
+const SHARE_TEXT = "🔥 PW Study Network — Physics Wallah ke saare FREE batches ek jagah! IIT JEE, NEET, Foundation — sab free! Dekho:";
 
 function PinnedChaptersSection() {
   const { pinned, unpin } = usePinnedChapters();

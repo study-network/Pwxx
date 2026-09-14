@@ -32,22 +32,28 @@ if ("serviceWorker" in navigator) {
 }
 
 // Load devtools detection after React renders (fire-and-forget).
-// disable-devtool accesses window.top which is blocked in cross-origin iframes,
-// so we guard for PROD and catch any failure silently.
-if (import.meta.env.PROD) {
-  import("disable-devtool").then(({ default: DisableDevtool }) => {
-    DisableDevtool({
-      disableMenu: true,
-      clearLog: true,
-      detectors: [0, 1, 2, 3, 4, 5, 6, 7],
-      ondevtoolopen: () => {
-        const strikes = addStrike();
-        window.dispatchEvent(
-          new CustomEvent("pwx-devtools-open", { detail: { strikes } })
-        );
-      },
-    });
-  }).catch(() => {
-    // Silently ignore if disable-devtool fails (sandboxed / cross-origin env)
-  });
+// Never run inside an iframe (like AI Studio preview or sandboxed iframe)
+if (import.meta.env.PROD && typeof window !== "undefined") {
+  try {
+    const isTopFrame = window.self === window.top;
+    if (isTopFrame) {
+      import("disable-devtool").then(({ default: DisableDevtool }) => {
+        DisableDevtool({
+          disableMenu: true,
+          clearLog: false,
+          detectors: [0, 1, 2, 3, 4, 5, 6, 7],
+          ondevtoolopen: () => {
+            const strikes = addStrike();
+            window.dispatchEvent(
+              new CustomEvent("pwx-devtools-open", { detail: { strikes } })
+            );
+          },
+        });
+      }).catch(() => {
+        // Silently ignore if disable-devtool fails
+      });
+    }
+  } catch {
+    // Cross-origin iframe window.top access throws SecurityError
+  }
 }

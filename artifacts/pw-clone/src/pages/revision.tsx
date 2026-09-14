@@ -331,7 +331,7 @@ function MasteredRow({ item, batchName }: { item: CompletedItem; batchName: stri
 
 export default function RevisionPage() {
   usePageMeta({
-    title: "Smart Revision Queue | PWX",
+    title: "Smart Revision Queue | PW Study Network",
     description: "Revise completed lectures using spaced repetition. Re-watch, view notes, or do a quick recall.",
     canonical: "/revision",
   });

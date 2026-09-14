@@ -57,7 +57,7 @@ export function InstallBanner() {
               <PlaySquare className="w-5 h-5 text-primary-foreground fill-current" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold leading-tight">Install PWX App</p>
+              <p className="text-sm font-semibold leading-tight">Install PW Study Network App</p>
               <p className="text-xs text-muted-foreground mt-0.5 leading-tight">
                 Fast, offline-ready &amp; no browser bar
               </p>
@@ -108,7 +108,7 @@ export function InstallBanner() {
                 <Share className="w-4 h-4 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold leading-tight">Install PWX on iPhone</p>
+                <p className="text-sm font-semibold leading-tight">Install PW Study Network on iPhone</p>
                 <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                   Tap <span className="font-semibold text-foreground">Share</span>{" "}
                   <span className="inline-block">⬆</span> at the bottom, then{" "}

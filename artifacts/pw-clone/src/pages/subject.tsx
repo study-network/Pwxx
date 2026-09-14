@@ -170,7 +170,7 @@ export default function Subject() {
 
   usePageMeta({
     title: `${subjectName} — ${batchName} | Free PW Lectures`,
-    description: `Browse all ${subjectName} chapters in ${batchName} on PWX. Free Physics Wallah video lectures, notes and DPP sheets for IIT JEE & NEET.`,
+    description: `Browse all ${subjectName} chapters in ${batchName} on PW Study Network. Free Physics Wallah video lectures, notes and DPP sheets for IIT JEE & NEET.`,
     canonical: `/batch/${batchId}/subject/${subjectId}`,
     schema: breadcrumbSchema([
       { label: "Home", href: "/" },

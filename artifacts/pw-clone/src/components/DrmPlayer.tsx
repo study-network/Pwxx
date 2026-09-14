@@ -765,7 +765,7 @@ export function DrmPlayer({
             
             {/* Clean Typography */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-white/70 text-[10px] font-bold tracking-[0.15em] uppercase mb-0.5">PWX</span>
+              <span className="text-white/70 text-[9px] font-bold tracking-[0.1em] uppercase mb-0.5">PW Study Network</span>
               <span className="text-white font-semibold text-2xl tracking-tight">
                 {loadProgress}<span className="text-[11px] text-white/50 ml-0.5 font-medium">%</span>
               </span>

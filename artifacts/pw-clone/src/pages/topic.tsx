@@ -450,7 +450,7 @@ export default function Topic() {
 
   usePageMeta({
     title: `${topicName} — ${subjectName} | Free PW Videos & Notes`,
-    description: `Watch ${topicName} free video lectures in ${subjectName} (${batchName}) on PWX. Download notes and DPP sheets for IIT JEE & NEET preparation.`,
+    description: `Watch ${topicName} free video lectures in ${subjectName} (${batchName}) on PW Study Network. Download notes and DPP sheets for IIT JEE & NEET preparation.`,
     canonical: `/batch/${batchId}/subject/${subjectId}/topic/${topicId}`,
     schema: breadcrumbSchema([
       { label: "Home", href: "/" },

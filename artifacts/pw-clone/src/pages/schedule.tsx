@@ -373,7 +373,7 @@ export default function Schedule() {
   usePageMeta({
     title: "Today's PW Live Class Schedule | Physics Wallah",
     description:
-      "Check today's Physics Wallah live class schedule on PWX. See lecture timings, live and upcoming classes for IIT JEE and NEET batches — updated every 2 minutes.",
+      "Check today's Physics Wallah live class schedule on PW Study Network. See lecture timings, live and upcoming classes for IIT JEE and NEET batches — updated every 2 minutes.",
     canonical: "/schedule",
   });
 
