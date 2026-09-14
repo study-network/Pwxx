@@ -6,37 +6,33 @@ import { cleanupExpiredArolinkKeys } from "./routes/admin";
 
 export default app;
 
-const isVercel = Boolean(process.env.VERCEL);
-const rawPort = process.env["PORT"] || (isVercel ? undefined : "5001");
+const rawPort = process.env["PORT"] || "5001";
+const port = Number(rawPort);
 
-if (rawPort) {
-  const port = Number(rawPort);
+if (Number.isNaN(port) || port <= 0) {
+  throw new Error(`Invalid PORT value: "${rawPort}"`);
+}
 
-  if (Number.isNaN(port) || port <= 0) {
-    throw new Error(`Invalid PORT value: "${rawPort}"`);
-  }
+// Auto-create tables on every startup (safe — uses CREATE TABLE IF NOT EXISTS)
+ensureTables().then(() => {
+  if (process.env.DATABASE_URL) {
+    cleanupExpiredArolinkKeys().catch((err) => {
+      logger.warn({ err }, "Unable to clean up expired Arolinks keys");
+    });
 
-  // Auto-create tables on every startup (safe — uses CREATE TABLE IF NOT EXISTS)
-  ensureTables().then(() => {
-    if (process.env.DATABASE_URL) {
+    const cleanupTimer = setInterval(() => {
       cleanupExpiredArolinkKeys().catch((err) => {
         logger.warn({ err }, "Unable to clean up expired Arolinks keys");
       });
+    }, 15 * 60 * 1000);
+    cleanupTimer.unref();
+  }
 
-      const cleanupTimer = setInterval(() => {
-        cleanupExpiredArolinkKeys().catch((err) => {
-          logger.warn({ err }, "Unable to clean up expired Arolinks keys");
-        });
-      }, 15 * 60 * 1000);
-      cleanupTimer.unref();
+  app.listen(port, (err) => {
+    if (err) {
+      logger.error({ err }, "Error listening on port");
+      process.exit(1);
     }
-
-    app.listen(port, (err) => {
-      if (err) {
-        logger.error({ err }, "Error listening on port");
-        process.exit(1);
-      }
-      logger.info({ port }, "Server listening");
-    });
+    logger.info({ port }, "Server listening");
   });
-}
+});
