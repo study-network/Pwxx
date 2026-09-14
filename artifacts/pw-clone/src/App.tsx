@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingBar } from "@/components/loading-bar";
-import DevToolsBlocked from "@/pages/devtools-blocked";
 import { NotificationBanner } from "@/components/notification-banner";
 import { MaintenanceGate } from "@/components/maintenance-gate";
 import { getStoredAccessKey, verifyAccessKey } from "@/lib/access-key";
@@ -131,22 +130,6 @@ function Router() {
 }
 
 function App() {
-  const [dtState, setDtState] = useState<{ detected: boolean; strikes: number }>({
-    detected: false,
-    strikes: 0,
-  });
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const { strikes } = (e as CustomEvent<{ strikes: number }>).detail;
-      setDtState({ detected: true, strikes });
-    };
-    window.addEventListener("pwx-devtools-open", handler);
-    return () => window.removeEventListener("pwx-devtools-open", handler);
-  }, []);
-
-  const dismiss = () => setDtState((s) => ({ ...s, detected: false }));
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -155,9 +138,6 @@ function App() {
           <Router />
         </WouterRouter>
         <Toaster />
-        {dtState.detected && (
-          <DevToolsBlocked strikes={dtState.strikes} onDismiss={dismiss} />
-        )}
       </TooltipProvider>
     </QueryClientProvider>
   );

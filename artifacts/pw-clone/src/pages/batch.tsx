@@ -5,7 +5,7 @@ import { useCustomBatches, MixSubject } from "@/hooks/useCustomBatches";
 import { useEnrolledBatches } from "@/hooks/useEnrolledBatches";
 import { Layout } from "@/components/layout";
 import { LazyImage } from "@/components/lazy-image";
-import { Link, useParams } from "wouter";
+import { Link, useParams, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -73,6 +73,7 @@ const KIND_META: Record<string, { label: string; icon: React.ReactNode; color: s
 
 // ── Schedule card (PW-style) ──────────────────────────────────────────────────
 function LiveScheduleCard({ item }: { item: ScheduleItem }) {
+  const [, navigate] = useLocation();
   const status    = getLectureStatus(item);
   const kind      = getScheduleItemKind(item);
   const isVideo   = kind === "video";
@@ -108,7 +109,7 @@ function LiveScheduleCard({ item }: { item: ScheduleItem }) {
         title: topic,
         backUrl: `/batch/${batchId}`,
       });
-      window.location.href = `/live-watch?${params.toString()}`;
+      navigate(`/live-watch?${params.toString()}`);
       return;
     }
     const params = new URLSearchParams({
@@ -116,7 +117,7 @@ function LiveScheduleCard({ item }: { item: ScheduleItem }) {
       title: topic,
       backUrl: `/batch/${batchId}`,
     });
-    window.location.href = `/watch?${params.toString()}`;
+    navigate(`/watch?${params.toString()}`);
   };
 
   const handleMaterialOpen = (e: React.MouseEvent) => {

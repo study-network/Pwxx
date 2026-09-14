@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useLocation } from "wouter";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout";
@@ -68,6 +69,7 @@ const KIND_META: Record<string, { label: string; icon: ReactNode; color: string 
 interface ScheduleCardProps { item: ScheduleItem; batchName: string; now: number; }
 
 function ScheduleCard({ item, batchName, now: _now }: ScheduleCardProps) {
+  const [, navigate] = useLocation();
   const status      = getLectureStatus(item);
   const kind        = getScheduleItemKind(item);
   const isVideo     = kind === "video";
@@ -119,7 +121,7 @@ function ScheduleCard({ item, batchName, now: _now }: ScheduleCardProps) {
       backUrl: `/schedule`,
       ...(status === "live" ? { video_type: "live", topicId } : {}),
     });
-    window.location.href = `/watch?${params.toString()}`;
+    navigate(`/watch?${params.toString()}`);
   };
 
   const handleMaterialOpen = (e: React.MouseEvent) => {
