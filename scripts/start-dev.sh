@@ -6,6 +6,7 @@ echo "Building API server..."
 (cd artifacts/api-server && node ./build.mjs)
 
 # Start the API server on internal port 5001
+for pid in $(ss -lptn 'sport = :5001' 2>/dev/null | grep -o 'pid=[0-9]*' | cut -d= -f2); do kill -9 $pid 2>/dev/null || true; done
 (cd artifacts/api-server && PORT=5001 node --enable-source-maps ./dist/index.mjs) &
 API_PID=$!
 
