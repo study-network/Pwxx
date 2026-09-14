@@ -22,7 +22,7 @@ RUN pnpm --filter @workspace/pw-clone run build
 FROM nginx:1.27-alpine AS runner
 
 # Copy built static files
-COPY --from=builder /app/artifacts/pw-clone/dist /usr/share/nginx/html
+COPY --from=builder /app/artifacts/pw-clone/dist/public /usr/share/nginx/html
 
 # Copy nginx config (SPA routing + compression + caching)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
