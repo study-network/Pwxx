@@ -13,10 +13,10 @@ import { readFileSync } from "fs";
 import path from "path";
 import type { Request, Response } from "express";
 
-const SITE_URL = process.env.FRONTEND_URL ?? "https://pwx.pages.dev";
-const SITE_NAME = "PWX — PW Free Batches";
-const DEFAULT_IMAGE = "https://cdn.pw.live/subjects/pwicons/PW.png";
-const TITLE_SUFFIX = "PWX";
+const SITE_URL = process.env.FRONTEND_URL ?? "https://pwstudynetwork.pages.dev";
+const SITE_NAME = "PW STUDY NETWORK";
+const DEFAULT_IMAGE = "https://i.ibb.co/7JhvrF0L/pw-logo.jpg";
+const TITLE_SUFFIX = "PW STUDY NETWORK";
 
 // ── meta per static route ────────────────────────────────────────────────────
 
@@ -50,7 +50,7 @@ const STATIC_ROUTES: Record<string, PageMeta> = {
   "/schedule": {
     title: `Today's PW Live Class Schedule | ${TITLE_SUFFIX}`,
     description:
-      "View today's Physics Wallah live class schedule. Check PW batch lecture timings for IIT JEE and NEET — updated in real time on PWX.",
+      "View today's Physics Wallah live class schedule. Check PW batch lecture timings for IIT JEE and NEET — updated in real time on PW STUDY NETWORK.",
     schema: {
       "@context": "https://schema.org",
       "@type": "WebPage",
@@ -75,7 +75,7 @@ const STATIC_ROUTES: Record<string, PageMeta> = {
   "/my-mix": {
     title: `My Study Mix | Custom PW Batch | ${TITLE_SUFFIX}`,
     description:
-      "Create your personalised study mix from Physics Wallah batches. Combine Physics from one batch, Maths from another — study your way on PWX.",
+      "Create your personalised study mix from Physics Wallah batches. Combine Physics from one batch, Maths from another — study your way on PW STUDY NETWORK.",
     schema: {
       "@context": "https://schema.org",
       "@type": "WebPage",
@@ -87,7 +87,7 @@ const STATIC_ROUTES: Record<string, PageMeta> = {
   "/materials": {
     title: `PW Study Materials | Notes & DPP Sheets | ${TITLE_SUFFIX}`,
     description:
-      "Download Physics Wallah study materials, DPP sheets, and notes for IIT JEE and NEET preparation — all free on PWX.",
+      "Download Physics Wallah study materials, DPP sheets, and notes for IIT JEE and NEET preparation — all free on PW STUDY NETWORK.",
   },
 };
 
@@ -95,12 +95,12 @@ const STATIC_ROUTES: Record<string, PageMeta> = {
 
 function batchMeta(batchId: string): PageMeta {
   return {
-    title: `PW Free Batch | Physics Wallah | ${TITLE_SUFFIX}`,
-    description: `Watch this Physics Wallah free batch on PWX. Free video lectures, DPP quizzes, and study materials for IIT JEE & NEET preparation.`,
+    title: `Physics Wallah Batch | ${TITLE_SUFFIX}`,
+    description: `Watch this Physics Wallah batch on PW STUDY NETWORK. Free video lectures, DPP quizzes, and study materials for IIT JEE & NEET preparation.`,
     schema: {
       "@context": "https://schema.org",
       "@type": "Course",
-      name: "Physics Wallah Free Batch",
+      name: "Physics Wallah Batch",
       description:
         "Free video lectures, DPP quizzes, and study materials by Physics Wallah.",
       url: `${SITE_URL}/batch/${batchId}`,
@@ -119,13 +119,13 @@ function batchMeta(batchId: string): PageMeta {
 function subjectMeta(batchId: string, subjectId: string): PageMeta {
   return {
     title: `PW Subject Lectures | ${TITLE_SUFFIX}`,
-    description: `Browse video lectures and study material for this Physics Wallah subject on PWX. Free chapters, notes and DPP for IIT JEE & NEET.`,
+    description: `Browse video lectures and study material for this Physics Wallah subject on PW STUDY NETWORK. Free chapters, notes and DPP for IIT JEE & NEET.`,
     schema: {
       "@context": "https://schema.org",
       "@type": "ItemList",
       name: "Physics Wallah Subject Chapters",
       url: `${SITE_URL}/batch/${batchId}/subject/${subjectId}`,
-      description: "Free Physics Wallah subject lectures and chapters on PWX.",
+      description: "Free Physics Wallah subject lectures and chapters on PW STUDY NETWORK.",
     },
   };
 }
@@ -137,7 +137,7 @@ function topicMeta(
 ): PageMeta {
   return {
     title: `PW Chapter Videos, Notes & DPP | ${TITLE_SUFFIX}`,
-    description: `Watch free Physics Wallah video lectures for this chapter. Download notes and DPP sheets for IIT JEE & NEET preparation on PWX.`,
+    description: `Watch free Physics Wallah video lectures for this chapter. Download notes and DPP sheets for IIT JEE & NEET preparation on PW STUDY NETWORK.`,
     schema: {
       "@context": "https://schema.org",
       "@type": "ItemList",

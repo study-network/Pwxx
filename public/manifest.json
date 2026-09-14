@@ -3,6 +3,7 @@
   "short_name": "PW STUDY NETWORK",
   "description": "Access JEE/NEET preparation batches, video lectures, and study materials from Physics Wallah.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#09090f",
   "theme_color": "#00ccff",
@@ -10,21 +11,21 @@
   "categories": ["education"],
   "icons": [
     {
-      "src": "/icon-192.svg",
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-512.svg",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-maskable.svg",
+      "src": "/icon-maskable.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
@@ -32,7 +33,7 @@
   "shortcuts": [
     {
       "name": "Browse Batches",
-      "url": "/",
+      "url": "/pw",
       "description": "Explore all available batches"
     }
   ]

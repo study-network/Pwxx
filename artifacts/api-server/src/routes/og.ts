@@ -70,13 +70,13 @@ ogRouter.get("/og/img", async (req, res) => {
 
 ogRouter.get("/og/batch/:batchId", async (req, res) => {
   const { batchId } = req.params;
-  const frontendOrigin = process.env["FRONTEND_URL"] ?? "https://pwx.pages.dev";
+  const frontendOrigin = process.env["FRONTEND_URL"] ?? "https://pwstudynetwork.pages.dev";
   const apiOrigin = process.env["API_PUBLIC_URL"] ?? `${req.protocol}://${req.get("host")}`;
   const batchUrl = `${frontendOrigin}/batch/${batchId}`;
 
-  let title = "PWX — JEE & NEET Video Player";
-  let description = "Watch Physics Wallah batches, live classes & DPP quizzes.";
-  let rawImageUrl = "https://cdn.pw.live/subjects/pwicons/PW.png";
+  let title = "PW STUDY NETWORK — JEE & NEET Video Player";
+  let description = "Watch Physics Wallah batches, live classes & DPP quizzes on PW STUDY NETWORK.";
+  let rawImageUrl = "https://i.ibb.co/7JhvrF0L/pw-logo.jpg";
 
   try {
     const r = await fetch(`${PW_API}/v3/batches/${batchId}/details`, {
@@ -86,8 +86,8 @@ ogRouter.get("/og/batch/:batchId", async (req, res) => {
       const json: any = await r.json();
       const d = json?.data ?? {};
       if (d.name) {
-        title = `${d.name} — PWX`;
-        description = `Watch ${d.name} batch on PWX — JEE & NEET video lectures, live classes & DPP quizzes.`;
+        title = `${d.name} — PW STUDY NETWORK`;
+        description = `Watch ${d.name} batch on PW STUDY NETWORK — JEE & NEET video lectures, live classes & DPP quizzes.`;
       }
       if (d.previewImage?.baseUrl && d.previewImage?.key) {
         rawImageUrl = `${d.previewImage.baseUrl}${d.previewImage.key}`;
@@ -122,7 +122,7 @@ ogRouter.get("/og/batch/:batchId", async (req, res) => {
   <meta property="og:image" content="${safeImage}" />
   <meta property="og:image:width" content="512" />
   <meta property="og:image:height" content="512" />
-  <meta property="og:site_name" content="PWX" />
+  <meta property="og:site_name" content="PW STUDY NETWORK" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${safeTitle}" />

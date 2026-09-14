@@ -12,8 +12,8 @@
 import { useEffect } from "react";
 
 const BASE_SITE = typeof window !== "undefined" ? window.location.origin : "https://pwstudynetwork.pages.dev";
-const DEFAULT_OG_IMAGE = "https://cdn.pw.live/subjects/pwicons/PW.png";
-const SITE_SUFFIX = "PW Study Network";
+const DEFAULT_OG_IMAGE = "https://i.ibb.co/7JhvrF0L/pw-logo.jpg";
+const SITE_SUFFIX = "PW STUDY NETWORK";
 
 export interface PageMetaOptions {
   title: string;
@@ -79,7 +79,7 @@ export function usePageMeta({
   schema,
 }: PageMetaOptions) {
   useEffect(() => {
-    const fullTitle = `${title} | ${SITE_SUFFIX}`;
+    const fullTitle = title.includes(SITE_SUFFIX) ? title : `${title} | ${SITE_SUFFIX}`;
     const image = ogImage || DEFAULT_OG_IMAGE;
     const path = canonical ?? window.location.pathname;
     const url = path.startsWith("http") ? path : `${BASE_SITE}${path}`;

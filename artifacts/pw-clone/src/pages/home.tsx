@@ -572,9 +572,9 @@ function MixCard({ mix, index }: { mix: { id: string; name: string; createdAt: n
 
 export default function Home() {
   usePageMeta({
-    title: "PW Free Batches | IIT JEE & NEET Free Video Lectures",
+    title: "PW STUDY NETWORK — IIT JEE & NEET Video Lectures",
     description:
-      "Browse 12,000+ Physics Wallah free batches for IIT JEE, NEET & Foundation. Watch free video lectures, DPP quizzes and study materials — no subscription required.",
+      "Browse 12,000+ Physics Wallah batches for IIT JEE, NEET & Foundation on PW STUDY NETWORK. Watch free video lectures, DPP quizzes and study materials — no subscription required.",
     canonical: "/",
   });
 
