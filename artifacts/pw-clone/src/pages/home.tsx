@@ -51,6 +51,8 @@ import type { Batch } from "@/hooks/usePWApi";
 import { INFINITE_PRACTICE_BATCH_ID } from "@/hooks/useInfinitePractice";
 
 const PAGE_SIZE = 8;
+const INFINITE_PRACTICE_BANNER = "https://i.ibb.co/5XV0yym8/file-00000000d2ac8211b3c6cab5e2220aae.png";
+
 const INFINITE_PRACTICE_BATCH: Batch = {
   _id: INFINITE_PRACTICE_BATCH_ID,
   name: "Infinite Practice",
@@ -61,7 +63,7 @@ const INFINITE_PRACTICE_BATCH: Batch = {
   feeTotal: 0,
   type: "practice",
   slug: "infinite-practice",
-  previewImage: "/infinite-practice-thumbnail.png",
+  previewImage: INFINITE_PRACTICE_BANNER,
 };
 
 type Tab = "all" | "enrolled";
@@ -113,7 +115,7 @@ function TelegramModal({ batchName, onClose }: { batchName: string; onClose: () 
           {/* Buttons */}
           <div className="flex flex-col gap-2">
             <a
-              href="https://t.me/codexstudys"
+              href="https://t.me/+lxSx0imjBEo2ZTll"
               target="_blank"
               rel="noopener noreferrer"
               onClick={onClose}
@@ -206,8 +208,8 @@ function PinnedChaptersSection() {
 function ShareStrip() {
   const [copied, setCopied] = useState(false);
 
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(SHARE_TEXT + " " + SITE_URL)}`;
-  const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(SITE_URL)}&text=${encodeURIComponent(SHARE_TEXT)}`;
+  const whatsappUrl = "https://whatsapp.com/channel/0029VbCbDOt0VycLRqoBz82x";
+  const telegramUrl = "https://t.me/+lxSx0imjBEo2ZTll";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(SITE_URL).then(() => {
@@ -223,7 +225,7 @@ function ShareStrip() {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        title="Share on WhatsApp"
+        title="Join WhatsApp Channel"
         className="p-2.5 rounded-lg hover:bg-secondary transition-colors touch-manipulation"
         style={{ color: "#25D366" }}
       >
@@ -235,7 +237,7 @@ function ShareStrip() {
         href={telegramUrl}
         target="_blank"
         rel="noopener noreferrer"
-        title="Share on Telegram"
+        title="Join Telegram Channel"
         className="p-2.5 rounded-lg hover:bg-secondary transition-colors touch-manipulation"
         style={{ color: "#29a7e0" }}
       >
@@ -421,7 +423,7 @@ function BatchCard({
           {isInfinitePractice || batch.previewImage ? (
             <LazyImage
               src={isInfinitePractice
-                ? "/infinite-practice-thumbnail.png"
+                ? INFINITE_PRACTICE_BANNER
                 : typeof batch.previewImage === "string"
                   ? batch.previewImage
                   : `${batch.previewImage!.baseUrl}${batch.previewImage!.key}`}

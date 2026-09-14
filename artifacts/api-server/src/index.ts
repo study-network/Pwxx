@@ -1,4 +1,3 @@
-import express from "express";
 import app from "./app";
 import { logger } from "./lib/logger";
 import { ensureTables } from "./lib/migrate";

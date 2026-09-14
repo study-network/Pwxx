@@ -53,8 +53,12 @@ export function InstallBanner() {
           className="fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-[60] w-[calc(100%-2rem)] max-w-sm"
         >
           <div className="flex items-center gap-3 bg-card border border-primary/30 rounded-2xl shadow-2xl px-4 py-3">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
-              <PlaySquare className="w-5 h-5 text-primary-foreground fill-current" />
+            <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0">
+              <img
+                src="https://i.ibb.co/7JhvrF0L/pw-logo.jpg"
+                alt="PW Study Network"
+                className="w-full h-full object-contain rounded-xl"
+              />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold leading-tight">Install PW Study Network App</p>

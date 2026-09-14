@@ -10,7 +10,7 @@ echo "Building API server..."
 API_PID=$!
 
 # Start the frontend Vite dev server on port 3000
-(cd artifacts/pw-clone && PORT=3000 API_PORT=5001 ./node_modules/.bin/vite --config vite.config.ts --host 0.0.0.0 --port 3000) &
+(cd artifacts/pw-clone && export PORT=3000 API_PORT=5001 && if [ -x ./node_modules/.bin/vite ]; then exec ./node_modules/.bin/vite --config vite.config.ts --host 0.0.0.0 --port 3000; else exec npx vite --config vite.config.ts --host 0.0.0.0 --port 3000; fi) &
 FRONTEND_PID=$!
 
 # Cleanup child processes when exiting
