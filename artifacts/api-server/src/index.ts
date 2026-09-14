@@ -1,42 +1,42 @@
+import express from "express";
 import app from "./app";
 import { logger } from "./lib/logger";
 import { ensureTables } from "./lib/migrate";
 import { cleanupExpiredArolinkKeys } from "./routes/admin";
 
-const rawPort = process.env["PORT"];
+export default app;
 
-if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided.",
-  );
-}
+const isVercel = Boolean(process.env.VERCEL);
+const rawPort = process.env["PORT"] || (isVercel ? undefined : "5001");
 
-const port = Number(rawPort);
+if (rawPort) {
+  const port = Number(rawPort);
 
-if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
-}
+  if (Number.isNaN(port) || port <= 0) {
+    throw new Error(`Invalid PORT value: "${rawPort}"`);
+  }
 
-// Auto-create tables on every startup (safe — uses CREATE TABLE IF NOT EXISTS)
-ensureTables().then(() => {
-  if (process.env.DATABASE_URL) {
-    cleanupExpiredArolinkKeys().catch((err) => {
-      logger.warn({ err }, "Unable to clean up expired Arolinks keys");
-    });
-
-    const cleanupTimer = setInterval(() => {
+  // Auto-create tables on every startup (safe — uses CREATE TABLE IF NOT EXISTS)
+  ensureTables().then(() => {
+    if (process.env.DATABASE_URL) {
       cleanupExpiredArolinkKeys().catch((err) => {
         logger.warn({ err }, "Unable to clean up expired Arolinks keys");
       });
-    }, 15 * 60 * 1000);
-    cleanupTimer.unref();
-  }
 
-  app.listen(port, (err) => {
-    if (err) {
-      logger.error({ err }, "Error listening on port");
-      process.exit(1);
+      const cleanupTimer = setInterval(() => {
+        cleanupExpiredArolinkKeys().catch((err) => {
+          logger.warn({ err }, "Unable to clean up expired Arolinks keys");
+        });
+      }, 15 * 60 * 1000);
+      cleanupTimer.unref();
     }
-    logger.info({ port }, "Server listening");
+
+    app.listen(port, (err) => {
+      if (err) {
+        logger.error({ err }, "Error listening on port");
+        process.exit(1);
+      }
+      logger.info({ port }, "Server listening");
+    });
   });
-});
+}
