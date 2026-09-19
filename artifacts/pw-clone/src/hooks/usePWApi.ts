@@ -1,7 +1,67 @@
 import { useQuery } from "@tanstack/react-query";
+import { apiUrl } from "@/lib/apiUrl";
 
-const API_BASE = "https://pwsecure.gourav23032009.workers.dev/api/pw";
+export const API_BASE = apiUrl("/pw");
 const MIN = 1000 * 60;
+
+export async function fetchPW(urlOrSubPath: string, options?: RequestInit): Promise<Response> {
+  let subPath = urlOrSubPath;
+  const legacyPrefix = "https://pwsecure.gourav23032009.workers.dev/api/pw/";
+  if (subPath.startsWith(legacyPrefix)) {
+    subPath = subPath.slice(legacyPrefix.length);
+  } else if (subPath.startsWith("/api/pw/")) {
+    subPath = subPath.slice("/api/pw/".length);
+  } else if (subPath.startsWith(API_BASE + "/")) {
+    subPath = subPath.slice(API_BASE.length + 1);
+  } else if (subPath.startsWith("/")) {
+    subPath = subPath.slice(1);
+  }
+
+  // 1. Try local proxy (/api/pw/...)
+  try {
+    const res = await fetch(apiUrl(`/pw/${subPath}`), options);
+    if (res.ok) {
+      const clone = res.clone();
+      const json = await clone.json().catch(() => null);
+      if (json && (json.success !== false || json.data)) {
+        return res;
+      }
+    }
+  } catch {}
+
+  // 2. Try direct vidcloud.eu.org endpoint
+  try {
+    const res = await fetch(`https://vidcloud.eu.org/api/${subPath}`, options);
+    if (res.ok) {
+      const clone = res.clone();
+      const json = await clone.json().catch(() => null);
+      if (json && (json.success !== false || json.data)) {
+        return res;
+      }
+    }
+  } catch {}
+
+  // 3. Try direct api.penpencil.co endpoint
+  try {
+    const res = await fetch(`https://api.penpencil.co/${subPath}`, {
+      ...options,
+      headers: {
+        "Accept": "application/json, text/plain, */*",
+        ...(options?.headers || {}),
+      },
+    });
+    if (res.ok) {
+      const clone = res.clone();
+      const json = await clone.json().catch(() => null);
+      if (json && (json.success !== false || json.data)) {
+        return res;
+      }
+    }
+  } catch {}
+
+  // 4. Fallback to legacy worker
+  return fetch(`https://pwsecure.gourav23032009.workers.dev/api/pw/${subPath}`, options);
+}
 
 export interface Batch {
   _id: string;
@@ -136,8 +196,8 @@ export function useAttachmentUrls(batchId: string, subjectId: string, contentId:
   return useQuery({
     queryKey: ["attachmentUrlsV4", batchId, subjectId, contentId, isDpp],
     queryFn: async () => {
-      const res = await fetch(
-        `${API_BASE}/v1/batches/${batchId}/subject/${subjectId}/schedule/${contentId}/schedule-details`
+      const res = await fetchPW(
+        `v1/batches/${batchId}/subject/${subjectId}/schedule/${contentId}/schedule-details`
       );
       if (!res.ok) throw new Error("Failed to fetch schedule details");
       const json = await res.json() as { success: boolean; data: ScheduleDetails };
@@ -228,8 +288,8 @@ export function useScheduleDetails(batchId: string, subjectId: string, scheduleI
   return useQuery({
     queryKey: ["scheduleDetails", batchId, subjectId, scheduleId],
     queryFn: async () => {
-      const res = await fetch(
-        `${API_BASE}/v1/batches/${batchId}/subject/${subjectId}/schedule/${scheduleId}/schedule-details`
+      const res = await fetchPW(
+        `v1/batches/${batchId}/subject/${subjectId}/schedule/${scheduleId}/schedule-details`
       );
       if (!res.ok) throw new Error("Failed to fetch schedule details");
       return res.json() as Promise<{ success: boolean; data: ScheduleDetails }>;
@@ -244,7 +304,7 @@ export function useVideoDetails(videoId: string) {
   return useQuery({
     queryKey: ["videoDetails", videoId],
     queryFn: async () => {
-      const res = await fetch(`${API_BASE}/v1/videos/${videoId}`);
+      const res = await fetchPW(`v1/videos/${videoId}`);
       if (!res.ok) throw new Error("Failed to fetch video details");
       return res.json() as Promise<{ success: boolean; data: VideoDetails }>;
     },
@@ -258,8 +318,8 @@ export function useVideoOtp(hexKey: string) {
   return useQuery({
     queryKey: ["videoOtp", hexKey],
     queryFn: async () => {
-      const res = await fetch(
-        `${API_BASE}/v1/videos/get-otp?key=${encodeURIComponent(hexKey)}&isEncoded=true`
+      const res = await fetchPW(
+        `v1/videos/get-otp?key=${encodeURIComponent(hexKey)}&isEncoded=true`
       );
       if (!res.ok) throw new Error("Failed to fetch OTP");
       return res.json() as Promise<{ success: boolean; data: { otp: string } }>;
@@ -288,7 +348,7 @@ export function useBatchDetails(batchId: string) {
   return useQuery({
     queryKey: ["batchDetails", batchId],
     queryFn: async () => {
-      const res = await fetch(`${API_BASE}/v3/batches/${batchId}/details`);
+      const res = await fetchPW(`v3/batches/${batchId}/details`);
       const json = await res.json().catch(() => null) as
         | { success?: boolean; data?: BatchDetailsData }
         | null;
@@ -317,7 +377,7 @@ export function useTopics(batchId: string, subjectId: string, page: number) {
   return useQuery({
     queryKey: ["topics", batchId, subjectId, page],
     queryFn: async () => {
-      const res = await fetch(`${API_BASE}/v2/batches/${batchId}/subject/${subjectId}/topics?page=${page}`);
+      const res = await fetchPW(`v2/batches/${batchId}/subject/${subjectId}/topics?page=${page}`);
       if (!res.ok) throw new Error("Failed to fetch topics");
       return res.json() as Promise<{ success: boolean; data: Topic[]; paginate: TopicsPaginate }>;
     },
@@ -337,8 +397,8 @@ export function useTopicContents(
   return useQuery({
     queryKey: ["topicContents", batchId, subjectId, topicId, contentType, page],
     queryFn: async () => {
-      const url = `${API_BASE}/v2/batches/${batchId}/subject/${subjectId}/contents?page=${page}&contentType=${contentType}&tag=${topicId}`;
-      const res = await fetch(url);
+      const url = `v2/batches/${batchId}/subject/${subjectId}/contents?page=${page}&contentType=${contentType}&tag=${topicId}`;
+      const res = await fetchPW(url);
       if (!res.ok) throw new Error(`Failed to fetch ${contentType}`);
       return res.json() as Promise<{ success: boolean; data: ContentItem[] }>;
     },
@@ -413,8 +473,8 @@ export function useTodaysSchedule(batchId: string) {
   return useQuery({
     queryKey: ["todaysSchedule", batchId],
     queryFn: async () => {
-      const res = await fetch(
-        `${API_BASE}/v2/batches/${batchId}/todays-schedule?batchId=${batchId}`
+      const res = await fetchPW(
+        `v2/batches/${batchId}/todays-schedule?batchId=${batchId}`
       );
       if (!res.ok) throw new Error("Failed to fetch schedule");
       return res.json() as Promise<{ success: boolean; data: ScheduleItem[] }>;
@@ -459,8 +519,8 @@ export function useDppList(batchId: string, batchSubjectId: string, chapterId: s
   return useQuery({
     queryKey: ["dppList", batchId, batchSubjectId, chapterId],
     queryFn: async () => {
-      const url = `${API_BASE}/v3/test-service/tests/new-dpp-list?page=1&batchId=${encodeURIComponent(batchId)}&batchSubjectId=${encodeURIComponent(batchSubjectId)}&chapterId=${encodeURIComponent(chapterId)}&dppType=ALL&limit=50`;
-      const res = await fetch(url);
+      const url = `v3/test-service/tests/new-dpp-list?page=1&batchId=${encodeURIComponent(batchId)}&batchSubjectId=${encodeURIComponent(batchSubjectId)}&chapterId=${encodeURIComponent(chapterId)}&dppType=ALL&limit=50`;
+      const res = await fetchPW(url);
       if (!res.ok) throw new Error("Failed to fetch DPP list");
       return res.json() as Promise<{ success: boolean; data: DppQuizItem[] }>;
     },
@@ -532,8 +592,8 @@ export function useDppTest(
         batchScheduleId: scheduleId,
       };
       if (cohortId) params.cohortId = cohortId;
-      const url = `${API_BASE}/v3/test-service/tests/${testId}/start-test?${new URLSearchParams(params)}`;
-      const res = await fetch(url);
+      const url = `v3/test-service/tests/${testId}/start-test?${new URLSearchParams(params)}`;
+      const res = await fetchPW(url);
       if (!res.ok) throw new Error("Failed to fetch DPP test");
       return res.json() as Promise<{ success: boolean; data: DppTestData }>;
     },
@@ -551,13 +611,13 @@ export function useAllSubjectVideos(batchId: string, subjectId: string) {
       const makeUrl = (page: number) => `${baseUrl}?page=${page}&contentType=videos`;
 
       const fetchPage = async (page: number): Promise<ContentItem[]> => {
-        const r = await fetch(makeUrl(page));
+        const r = await fetchPW(makeUrl(page));
         if (!r.ok) return [];
         const j = await r.json() as Record<string, unknown>;
         return (j.data as ContentItem[]) ?? [];
       };
 
-      const firstRes = await fetch(makeUrl(1));
+      const firstRes = await fetchPW(makeUrl(1));
       if (!firstRes.ok) throw new Error("Failed to fetch subject videos");
       const firstJson = await firstRes.json() as Record<string, unknown>;
       const firstData: ContentItem[] = (firstJson.data as ContentItem[]) ?? [];
@@ -602,14 +662,14 @@ export function useAllTopicContents(
         `${baseUrl}?page=${page}&contentType=${contentType}&tag=${topicId}`;
 
       const fetchPage = async (page: number): Promise<ContentItem[]> => {
-        const r = await fetch(makeUrl(page));
+        const r = await fetchPW(makeUrl(page));
         if (!r.ok) return [];
         const j = await r.json() as Record<string, unknown>;
         return (j.data as ContentItem[]) ?? [];
       };
 
       // Fetch page 1 first — inspect whatever paginate/pagination field exists
-      const firstRes = await fetch(makeUrl(1));
+      const firstRes = await fetchPW(makeUrl(1));
       if (!firstRes.ok) throw new Error(`Failed to fetch ${contentType}`);
       const firstJson = await firstRes.json() as Record<string, unknown>;
       const firstData: ContentItem[] = (firstJson.data as ContentItem[]) ?? [];
@@ -676,8 +736,8 @@ export function useBatchTests(batchId: string) {
   return useQuery({
     queryKey: ["batchTests", batchId],
     queryFn: async () => {
-      const res = await fetch(
-        `${API_BASE}/v3/test-service/tests?testType=All&testStatus=All&attemptStatus=All&batchId=${batchId}&isSubjective=false`
+      const res = await fetchPW(
+        `v3/test-service/tests?testType=All&testStatus=All&attemptStatus=All&batchId=${batchId}&isSubjective=false`
       );
       if (!res.ok) throw new Error("Failed to fetch tests");
       return res.json() as Promise<{ success: boolean; data: Test[] }>;
@@ -701,8 +761,8 @@ export function useTestInstructions(testId: string, enabled: boolean) {
   return useQuery({
     queryKey: ["testInstructions", testId],
     queryFn: async () => {
-      const res = await fetch(
-        `${API_BASE}/v3/test-service/tests/${testId}/instructions`
+      const res = await fetchPW(
+        `v3/test-service/tests/${testId}/instructions`
       );
       if (!res.ok) throw new Error("Failed to fetch instructions");
       return res.json() as Promise<{ success: boolean; data: TestInstructions }>;

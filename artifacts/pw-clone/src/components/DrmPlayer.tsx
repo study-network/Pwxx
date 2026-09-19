@@ -4,7 +4,7 @@ import { HLSDownloader, DownloadProgress } from "@/lib/hlsDownloader";
 import { apiUrl } from "@/lib/apiUrl";
 import { NetworkPing } from "@/components/NetworkPing";
 
-const PW_API = "https://pwsecure.gourav23032009.workers.dev/api/pw";
+const PW_API = apiUrl("/pw");
 const PROXY_BASE = apiUrl("/api");
 const ACCENT = "#5a4bda";
 
@@ -208,23 +208,51 @@ export function DrmPlayer({
           let videoUrl: string | undefined;
 
           // Try fetching from the slides API as it contains the required URL for many videos
-          const slidesRes = await fetch(
-            `${PW_API}/v1/batches/${batchId}/subject/${subjectId}/schedule/${childId}/slides`
-          );
-          if (slidesRes.ok) {
-            const slidesData = await slidesRes.json();
-            videoUrl = slidesData?.data?.url;
+          try {
+            const slidesRes = await fetch(
+              `${PW_API}/v1/batches/${batchId}/subject/${subjectId}/schedule/${childId}/slides`
+            );
+            if (slidesRes.ok) {
+              const slidesData = await slidesRes.json();
+              videoUrl = slidesData?.data?.url;
+            }
+          } catch {}
+
+          // Fallback to the dedicated pw-video proxy
+          if (!videoUrl) {
+            try {
+              const videoRes = await fetch(apiUrl(`/pw-video/${encodeURIComponent(childId)}`));
+              if (videoRes.ok) {
+                const videoData = await videoRes.json();
+                videoUrl = videoData?.data?.videoUrl;
+              }
+            } catch {}
           }
 
-          // Fallback to the videos API if the URL wasn't found in slides
+          // Fallback to the videos API if the URL wasn't found
           if (!videoUrl) {
-            const videoRes = await fetch(
-              `${PW_API}/v1/videos/${encodeURIComponent(childId)}`
-            );
-            if (videoRes.ok) {
-              const videoData = await videoRes.json();
-              videoUrl = videoData?.data?.videoUrl;
-            }
+            try {
+              const videoRes = await fetch(
+                `${PW_API}/v1/videos/${encodeURIComponent(childId)}`
+              );
+              if (videoRes.ok) {
+                const videoData = await videoRes.json();
+                videoUrl = videoData?.data?.videoUrl;
+              }
+            } catch {}
+          }
+
+          // Final direct fallback
+          if (!videoUrl) {
+            try {
+              const videoRes = await fetch(
+                `https://vidcloud.eu.org/api/v1/videos/${encodeURIComponent(childId)}`
+              );
+              if (videoRes.ok) {
+                const videoData = await videoRes.json();
+                videoUrl = videoData?.data?.videoUrl;
+              }
+            } catch {}
           }
 
           if (!videoUrl) throw new Error("No video URL in video details");

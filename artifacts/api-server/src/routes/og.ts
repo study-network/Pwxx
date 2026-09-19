@@ -1,8 +1,7 @@
 import { Router } from "express";
+import { fetchPWUpstream } from "./proxy.js";
 
 const ogRouter = Router();
-
-const PW_API = "https://pwsecure.gourav23032009.workers.dev/api/pw";
 
 function isAllowedImageHost(hostname: string): boolean {
   return (
@@ -79,9 +78,7 @@ ogRouter.get("/og/batch/:batchId", async (req, res) => {
   let rawImageUrl = "https://i.ibb.co/7JhvrF0L/pw-logo.jpg";
 
   try {
-    const r = await fetch(`${PW_API}/v3/batches/${batchId}/details`, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; PWX-OG/1.0)" },
-    });
+    const r = await fetchPWUpstream(`v3/batches/${batchId}/details`);
     if (r.ok) {
       const json: any = await r.json();
       const d = json?.data ?? {};

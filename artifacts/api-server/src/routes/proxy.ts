@@ -170,7 +170,50 @@ proxyRouter.get("/akp-video-url", async (req, res) => {
 // ── PW lecture slides + attachments ─────────────────────────────────────────
 // Keeps the browser independent of the upstream API's CORS and normalizes the
 // two schedule endpoints into the small shape the video player needs.
-const PW_API_BASE = "https://pwsecure.gourav23032009.workers.dev/api/pw/v1";
+const PW_UPSTREAM_BASES = [
+  "https://vidcloud.eu.org/api",
+  "https://api.penpencil.co",
+  "https://pwsecure.gourav23032009.workers.dev/api/pw",
+];
+
+const PW_HEADERS: Record<string, string> = {
+  "User-Agent": "curl/8.5.0",
+  "Accept": "application/json, text/plain, */*",
+  "Referer": "https://www.pw.live/",
+  "Origin": "https://www.pw.live",
+  "client-id": "5eb393ee95fab7468a79d189",
+  "client-type": "WEB",
+  "client-version": "5.2.1",
+};
+
+export async function fetchPWUpstream(subPath: string, init?: RequestInit): Promise<Response> {
+  const cleanPath = subPath.startsWith("/") ? subPath.slice(1) : subPath;
+  let lastError: any = null;
+  let lastResp: Response | null = null;
+
+  for (const base of PW_UPSTREAM_BASES) {
+    const url = `${base}/${cleanPath}`;
+    try {
+      const resp = await fetch(url, {
+        ...init,
+        headers: {
+          ...PW_HEADERS,
+          ...(init?.headers || {}),
+        },
+      });
+      if (resp.ok) {
+        return resp;
+      }
+      lastResp = resp;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  if (lastResp) return lastResp;
+  throw lastError || new Error(`All PW upstream endpoints failed for /${cleanPath}`);
+}
+
 const OBJECT_ID = /^[a-f\d]{24}$/i;
 
 function pwAssetUrl(asset: any, fallback?: string): string {
@@ -234,11 +277,11 @@ proxyRouter.get("/pw-schedule-assets", async (req, res) => {
     return;
   }
 
-  const base = `${PW_API_BASE}/batches/${batchId}/subject/${subjectId}/schedule/${scheduleId}`;
+  const subPath = `v1/batches/${batchId}/subject/${subjectId}/schedule/${scheduleId}`;
   try {
     const [slidesResponse, detailsResponse] = await Promise.all([
-      fetch(`${base}/slides`, { headers: { Accept: "application/json" } }),
-      fetch(`${base}/schedule-details`, { headers: { Accept: "application/json" } }),
+      fetchPWUpstream(`${subPath}/slides`),
+      fetchPWUpstream(`${subPath}/schedule-details`),
     ]);
     if (!slidesResponse.ok || !detailsResponse.ok) {
       res.status(502).json({ success: false, error: "Lecture resources are unavailable" });
@@ -326,7 +369,7 @@ proxyRouter.get("/video-download", async (req, res) => {
   }
 });
 
-// ── PW video metadata proxy (fetches from pwsecure with proper headers) ────────
+// ── PW video metadata proxy ───────────────────────────────────────────────
 proxyRouter.get("/pw-video/:videoId", async (req, res) => {
   const { videoId } = req.params as { videoId: string };
   if (!videoId) {
@@ -334,19 +377,8 @@ proxyRouter.get("/pw-video/:videoId", async (req, res) => {
     return;
   }
 
-  const PW_SECURE = "https://pwsecure.gourav23032009.workers.dev/api/pw";
-  const url = `${PW_SECURE}/v1/videos/${encodeURIComponent(videoId)}`;
-
   try {
-    const upstream = await fetch(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-        "Referer": "https://www.pw.live/",
-        "Origin": "https://www.pw.live",
-        "Accept": "application/json, text/plain, */*",
-      },
-    });
-
+    const upstream = await fetchPWUpstream(`v1/videos/${encodeURIComponent(videoId)}`);
     const data = await upstream.json();
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Cache-Control", "public, max-age=300");
@@ -354,6 +386,34 @@ proxyRouter.get("/pw-video/:videoId", async (req, res) => {
   } catch (err) {
     req.log.error({ err }, "pw-video proxy fetch failed");
     res.status(502).json({ error: "Upstream fetch failed" });
+  }
+});
+
+// ── General PW API proxy with multi-upstream fallback ───────────────────────
+proxyRouter.all("/pw/{*path}", async (req, res) => {
+  const fullSubPath = req.url.replace(/^\/pw\/?/, "");
+
+  try {
+    const forwardHeaders: Record<string, string> = {};
+    if (req.headers.authorization) {
+      forwardHeaders["authorization"] = req.headers.authorization as string;
+    }
+    if (req.headers["randomid"]) {
+      forwardHeaders["randomid"] = req.headers["randomid"] as string;
+    }
+
+    const upstream = await fetchPWUpstream(fullSubPath, {
+      method: req.method,
+      headers: forwardHeaders,
+      body: req.method !== "GET" && req.method !== "HEAD" ? JSON.stringify(req.body) : undefined,
+    });
+    const data = await upstream.json();
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Cache-Control", "public, max-age=180");
+    res.status(upstream.status).json(data);
+  } catch (err) {
+    req.log.error({ err, path: fullSubPath }, "PW general proxy failed");
+    res.status(502).json({ success: false, error: "Failed to communicate with PW upstream providers" });
   }
 });
 
