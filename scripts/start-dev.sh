@@ -3,6 +3,10 @@ set -e
 
 # Build api-server bundle
 echo "Building API server..."
+case "$LOG_LEVEL" in
+  fatal|error|warn|info|debug|trace|silent) ;;
+  *) export LOG_LEVEL="info" ;;
+esac
 (cd artifacts/api-server && node ./build.mjs)
 
 # Start the API server on internal port 5001
